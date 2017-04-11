@@ -47,6 +47,7 @@ func App() *buffalo.App {
 		app.GET("/", HomeHandler)
 
 		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
+		app.Resource("/posts", PostsResource{&buffalo.BaseResource{}})
 	}
 
 	return app

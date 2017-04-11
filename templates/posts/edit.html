@@ -1,0 +1,6 @@
+<h1>Edit Post</h1>
+
+<%= form_for(post, {action: "/posts/" + post.ID, method: "PUT", errors: errors}) { %>
+  <%= partial("posts/form.html") %>
+  <a href="/posts/<%= post.ID %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+<% } %>
