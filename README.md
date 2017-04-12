@@ -1,11 +1,15 @@
-# Welcome to Buffalo!
+# AppStory
+This is a port of [AppStory](https://github.com/jnoortheen/appstory) to Go. A multi-user blog using 
+[go-buffalo](https://github.com/gobuffalo/buffalo).
 
-Thank you for choosing Buffalo for your web development needs.
-
+## Tech Stack
+- Go
+- Buffalo
+- Bootstrap3
 
 ## Database Setup
 
-using sqlite3 and data backend
+using sqlite3 as data backend
 
 ### Create Your Databases
 
@@ -19,18 +23,21 @@ To run all pending migrations
 
 ## Starting the Application
 
-Buffalo ships with a command that will watch your application and automatically rebuild the Go binary and any assets for you. To do that run the "buffalo dev" command:
+Run the binary found here at [dist](./dist)
+	$ ./muserblog
 
-	$ buffalo dev
+If you point your browser to [http://127.0.0.1:3000](http://127.0.0.1:3000) blog home page.
 
-If you point your browser to [http://127.0.0.1:3000](http://127.0.0.1:3000) you should see a "Welcome to Buffalo!" page.
-
-**Congratulations!** You now have your Buffalo application up and running.
-
-## What Next?
-
-We recommend you heading over to [http://gobuffalo.io](http://gobuffalo.io) and reviewing all of the great documentation there.
-
-Good luck!
-
-[Powered by Buffalo](http://gobuffalo.io)
+## Functionality
+-[ ] User Accounts:
+  Users account activity is implemented using secured cookies. Usernames are maintained to be unique. The password is stored as Hash values with salted compound.
+  User activities  
+  - Sign-up
+  - Sign-in 
+  - Sign-out 
+-[ ] Blog Posts:
+  Registered users can post to the blog. That post can later be edited or deleted by the author.
+-[ ] Commenting:
+  Posts can be commented by any of registered user. Unregistered users can view the comments. Registered users can edit or delete their own comments.
+-[ ] Like/Dislike:
+  Each of the post can be like/disliked by other registered users (Not the Author). User can't dislike a post if they haven't already liked it.
