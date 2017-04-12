@@ -3,13 +3,13 @@ package actions_test
 import "muserblog/models"
 
 var (
-	postTitle = "Post 1"
-	postContent = "Post 1 content"
+	postTitle        = "Post 1"
+	postContent      = "Post 1 content"
 	updatedPostTitle = "updated title for post"
 
 	postsListUrl = "/posts"
-	postsNewUrl = postsListUrl + "/new"
-	postUrl = postsListUrl + "/%s"
+	postsNewUrl  = postsListUrl + "/new"
+	postUrl      = postsListUrl + "/%s"
 	postsEditUrl = postUrl + "/edit"
 )
 
@@ -33,7 +33,7 @@ func createPost(as *ActionSuite) *models.Post {
 	post := postForTest()
 	as.NoError(as.DB.Create(post))
 	// check exactly one new record is created
-	as.Equal(countPosts(as) - prevCount, 1)
+	as.Equal(countPosts(as)-prevCount, 1)
 	return post
 }
 
