@@ -30,9 +30,10 @@ func App() *buffalo.App {
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
 		}
-		// Protect against CSRF attacks. https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
-		// Remove to disable this.
-		app.Use(middleware.CSRF)
+		if ENV != "test" {
+			// Protect against CSRF attacks. https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)
+			app.Use(middleware.CSRF)
+		}
 
 		app.Use(middleware.PopTransaction(models.DB))
 
