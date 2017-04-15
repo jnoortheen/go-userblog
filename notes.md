@@ -10,4 +10,7 @@ things to look out while using go buffalo
 	as.Contains(res.Body.String(), post.Content)
 ```
 
-2. 
+2. GO & ORMs
+- many of the ORMs don't have all the features like ones found in other dynamic languages
+- GORM, Beego's ORM are having most of the features (from go libs that I know so far)
+- Pop uses sqlx behind the scenes and doesn't have much support/example for handling relations.
