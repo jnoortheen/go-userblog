@@ -17,8 +17,8 @@ func (as *ModelSuite) Test_Comment() {
 	post := postForTest()
 	as.NoError(as.DB.Create(post))
 
-	comment := &models.Comment{Content:commentContent, PostID:post.ID, UserID:user.ID}
+	comment := &models.Comment{Content: commentContent, PostID: post.ID, UserID: user.ID}
 	as.NoError(as.DB.Create(comment))
 
-	as.Equal(as.countObjects(models.Comment{}) - prevCount, 1)
+	as.Equal(as.countObjects(models.Comment{})-prevCount, 1)
 }
