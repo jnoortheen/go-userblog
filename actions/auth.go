@@ -16,9 +16,12 @@ func init() {
 	gothic.Store = App().SessionStore
 
 	goth.UseProviders(
-		auth0.New(os.Getenv("AUTH0_KEY"), os.Getenv("AUTH0_SECRET"), fmt.Sprintf("%s%s", App().Host, "/auth/auth0/callback")),
-		gplus.New(os.Getenv("GPLUS_KEY"), os.Getenv("GPLUS_SECRET"), fmt.Sprintf("%s%s", App().Host, "/auth/gplus/callback")),
-		facebook.New(os.Getenv("FACEBOOK_KEY"), os.Getenv("FACEBOOK_SECRET"), fmt.Sprintf("%s%s", App().Host, "/auth/facebook/callback")),
+		auth0.New(os.Getenv("AUTH0_KEY"), os.Getenv("AUTH0_SECRET"),
+			fmt.Sprintf("%s%s", App().Host, "/auth/auth0/callback"), os.Getenv("AUTH0_DOMAIN")),
+		gplus.New(os.Getenv("GPLUS_KEY"), os.Getenv("GPLUS_SECRET"),
+			fmt.Sprintf("%s%s", App().Host, "/auth/gplus/callback")),
+		facebook.New(os.Getenv("FACEBOOK_KEY"), os.Getenv("FACEBOOK_SECRET"),
+			fmt.Sprintf("%s%s", App().Host, "/auth/facebook/callback")),
 	)
 }
 
