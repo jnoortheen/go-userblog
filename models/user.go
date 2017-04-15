@@ -60,5 +60,5 @@ func (u *User) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 func NewUser(name string, plainPwd string, email string) *User {
 	salt := uuid.NewV1()
 	pwd := uuid.NewV3(salt, plainPwd).String()
-	return &User{Name: name, Email: nulls.String{String:email, Valid:true}, Pwd: pwd, Salt: salt}
+	return &User{Name: name, Email: nulls.String{String: email, Valid: true}, Pwd: pwd, Salt: salt}
 }
