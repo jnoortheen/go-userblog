@@ -15,6 +15,7 @@ type Post struct {
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 	Title     string    `json:"title" db:"title"`
 	Content   string    `json:"content" db:"content"`
+	UserID    uuid.UUID `json:"user_id" db:"user_id"`
 }
 
 // String is not required by pop and may be deleted

@@ -1,19 +1,25 @@
 package models_test
 
-import "muserblog/models"
+import (
+	"muserblog/models"
+	"github.com/satori/go.uuid"
+)
 
 var (
-	postTitle   = "Post 1"
+	postTitle = "Post 1"
 	postContent = "Post 1 content"
 )
 
-func postForTest() *models.Post {
-	return &models.Post{Title: postTitle, Content: postContent}
+func postForTest(user_id uuid.UUID) *models.Post {
+	return &models.Post{Title: postTitle, Content: postContent, UserID:user_id}
 }
 
 func (as *ModelSuite) Test_Post() {
 	prevCount := as.countObjects(models.Post{})
-	post := postForTest()
-	as.NoError(as.DB.Create(post))
-	as.Equal(as.countObjects(models.Post{})-prevCount, 1)
+
+	user := userForTest()
+	as.DB.Create(user)
+
+	as.NoError(as.DB.Create(postForTest(user.ID)))
+	as.Equal(as.countObjects(models.Post{}) - prevCount, 1)
 }
