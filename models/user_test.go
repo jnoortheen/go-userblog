@@ -5,24 +5,18 @@ import (
 )
 
 var (
-	userName     = "test_user"
+	userName = "test_user"
 	userPwdPlain = "password"
-	userEmail    = "user@mail.com"
+	userEmail = "user@mail.com"
 )
 
 func userForTest() *models.User {
 	return models.NewUser(userName, userPwdPlain, userEmail)
 }
 
-func countUsers(as *ModelSuite) int {
-	usersCount, err := as.DB.Count(models.Users{})
-	as.NoError(err)
-	return usersCount
-}
-
 func (as *ModelSuite) Test_User() {
-	prevCount := countUsers(as)
+	prevCount := as.countObjects(models.User{})
 	user := userForTest()
 	as.NoError(as.DB.Create(user))
-	as.Equal(countUsers(as)-prevCount, 1)
+	as.Equal(as.countObjects(models.User{}) - prevCount, 1)
 }
