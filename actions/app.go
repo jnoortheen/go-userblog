@@ -51,10 +51,14 @@ func App() *buffalo.App {
 
 		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
 		app.Resource("/posts", PostsResource{&buffalo.BaseResource{}})
+
 		auth := app.Group("/auth")
 		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
 		auth.GET("/{provider}/callback", AuthCallback)
+		auth.GET("/signin", SigninHandler)
+		auth.GET("/signup", SignupHandler)
+		auth.GET("/signout", SignoutHandler)
+		auth.POST("/validate", SigninHandler)
 	}
-
 	return app
 }

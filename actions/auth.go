@@ -33,3 +33,15 @@ func AuthCallback(c buffalo.Context) error {
 	// Do something with the user, maybe register them/sign them in
 	return c.Render(200, r.JSON(user))
 }
+
+func SigninHandler(c buffalo.Context) error {
+	return nil
+}
+
+func SignoutHandler(c buffalo.Context) error {
+	return nil
+}
+
+func SignupHandler(c buffalo.Context) error {
+	return nil
+}
