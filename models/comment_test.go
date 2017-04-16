@@ -14,11 +14,18 @@ func (as *ModelSuite) Test_Comment() {
 	user := userForTest()
 	as.NoError(as.DB.Create(user))
 
-	post := postForTest()
+	commentUser := userForTest()
+	as.NoError(as.DB.Create(commentUser))
+
+	post := postForTest(user.ID)
 	as.NoError(as.DB.Create(post))
 
-	comment := &models.Comment{Content: commentContent, PostID: post.ID, UserID: user.ID}
+	comment := &models.Comment{Content: commentContent, PostID: post.ID, UserID: commentUser.ID}
 	as.NoError(as.DB.Create(comment))
 
-	as.Equal(as.countObjects(models.Comment{})-prevCount, 1)
+	as.Equal(as.countObjects(models.Comment{}) - prevCount, 1)
+
+	comment = models.Comment{}
+	as.DB.First(comment)
+	as.Equal(commentContent, comment.Content)
 }

@@ -8,7 +8,7 @@ func (as *ModelSuite) Test_Like() {
 	user := userForTest()
 	as.NoError(as.DB.Create(user))
 
-	post := postForTest()
+	post := postForTest(user.ID)
 	as.NoError(as.DB.Create(post))
 
 	comment := &models.Like{PostID: post.ID, UserID: user.ID}

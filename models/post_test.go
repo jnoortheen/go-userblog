@@ -21,5 +21,15 @@ func (as *ModelSuite) Test_Post() {
 	as.DB.Create(user)
 
 	as.NoError(as.DB.Create(postForTest(user.ID)))
+
 	as.Equal(as.countObjects(models.Post{}) - prevCount, 1)
+
+	user = &models.User{}
+	as.DB.First(user)
+
+	post := &models.Post{}
+	as.DB.First(post)
+
+	as.Equal(postTitle, post.Title)
+	as.Equal(postContent, post.Content)
 }
