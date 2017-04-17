@@ -10,8 +10,6 @@ import (
 
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
-
-	"github.com/markbates/goth/gothic"
 )
 
 // ENV is used to help switch settings based on where the
@@ -53,12 +51,8 @@ func App() *buffalo.App {
 		app.Resource("/posts", PostsResource{&buffalo.BaseResource{}})
 
 		auth := app.Group("/auth")
-		auth.GET("/{provider}", buffalo.WrapHandlerFunc(gothic.BeginAuthHandler))
-		auth.GET("/{provider}/callback", AuthCallback)
-		auth.GET("/signin", SigninHandler)
-		auth.GET("/signup", SignupHandler)
-		auth.GET("/signout", SignoutHandler)
-		auth.POST("/validate", SigninHandler)
+		auth.POST("/", AuthHandler)
+		auth.GET("/{action}", AuthFormHandler)
 	}
 	return app
 }
