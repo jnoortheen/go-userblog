@@ -9,7 +9,7 @@ var (
 )
 
 func (as *ModelSuite) Test_Comment() {
-	prevCount := as.countObjects(models.Comment{})
+	prevCount := as.CountObjects(models.Comment{})
 
 	user := userForTest()
 	as.NoError(as.DB.Create(user))
@@ -23,7 +23,7 @@ func (as *ModelSuite) Test_Comment() {
 	comment := &models.Comment{Content: commentContent, PostID: post.ID, UserID: commentUser.ID}
 	as.NoError(as.DB.Create(comment))
 
-	as.Equal(as.countObjects(models.Comment{}) - prevCount, 1)
+	as.Equal(as.CountObjects(models.Comment{}) - prevCount, 1)
 
 	comment = &models.Comment{}
 	as.DB.First(comment)
