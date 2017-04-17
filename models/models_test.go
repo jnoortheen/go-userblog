@@ -1,23 +1,16 @@
 package models_test
 
 import (
+	"muserblog/helpers/test"
 	"testing"
-
 	"github.com/gobuffalo/suite"
 )
 
 type ModelSuite struct {
-	*suite.Model
+	*test.BloggySuite
 }
 
-func Test_ModelSuite(t *testing.T) {
-	as := &ModelSuite{suite.NewModel()}
+func Test_BloggySuite(t *testing.T) {
+	as := &test.BloggySuite{suite.NewModel()}
 	suite.Run(t, as)
-}
-
-// count and assert no error happens
-func (as *ModelSuite) countObjects(model interface{}) int {
-	usersCount, err := as.DB.Count(model)
-	as.NoError(err)
-	return usersCount
 }

@@ -3,7 +3,7 @@ package models_test
 import "muserblog/models"
 
 func (as *ModelSuite) Test_Like() {
-	prevCount := as.countObjects(models.Like{})
+	prevCount := as.CountObjects(models.Like{})
 
 	user := userForTest()
 	as.NoError(as.DB.Create(user))
@@ -14,5 +14,5 @@ func (as *ModelSuite) Test_Like() {
 	comment := &models.Like{PostID: post.ID, UserID: user.ID}
 	as.NoError(as.DB.Create(comment))
 
-	as.Equal(as.countObjects(models.Like{}) - prevCount, 1)
+	as.Equal(as.CountObjects(models.Like{}) - prevCount, 1)
 }

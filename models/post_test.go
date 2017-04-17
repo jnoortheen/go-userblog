@@ -15,14 +15,14 @@ func postForTest(user_id uuid.UUID) *models.Post {
 }
 
 func (as *ModelSuite) Test_Post() {
-	prevCount := as.countObjects(models.Post{})
+	prevCount := as.CountObjects(models.Post{})
 
 	user := userForTest()
 	as.DB.Create(user)
 
 	as.NoError(as.DB.Create(postForTest(user.ID)))
 
-	as.Equal(as.countObjects(models.Post{}) - prevCount, 1)
+	as.Equal(as.CountObjects(models.Post{}) - prevCount, 1)
 
 	user = &models.User{}
 	as.DB.First(user)

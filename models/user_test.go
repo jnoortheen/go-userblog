@@ -2,12 +2,13 @@ package models_test
 
 import (
 	"muserblog/models"
+	//"fmt"
 )
 
 var (
-	userName     = "test_user"
+	userName = "test_user"
 	userPwdPlain = "password"
-	userEmail    = "user@mail.com"
+	userEmail = "user@mail.com"
 )
 
 func userForTest() *models.User {
@@ -15,8 +16,21 @@ func userForTest() *models.User {
 }
 
 func (as *ModelSuite) Test_User() {
-	prevCount := as.countObjects(models.User{})
+	prevCount := as.CountObjects(models.User{})
+
 	user := userForTest()
-	as.NoError(as.DB.Create(user))
-	as.Equal(as.countObjects(models.User{})-prevCount, 1)
+	as.NoValidationError(as.DB.ValidateAndCreate(user))
+
+	as.Equal(as.CountObjects(models.User{}) - prevCount, 1)
+
+	//user = userForTest()
+	//verr, err := as.DB.ValidateAndCreate(user)
+	//if verr.HasAny() {
+	//	fmt.Printf("%T", verr)
+	//	fmt.Println(verr, "this")
+	//}
+	//if err != nil {
+	//	fmt.Println(err, "that")
+	//}
+	//panic("fail")
 }
