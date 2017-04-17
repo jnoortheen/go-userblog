@@ -5,7 +5,6 @@ body {
       font: 20px Montserrat, sans-serif;
       line-height: 1.8;
 }
-
 .navbar {
   padding-top: 15px;
   padding-bottom: 15px;
@@ -15,8 +14,90 @@ body {
   font-size: 12px;
   letter-spacing: 5px;
 }
-
 .container-fluid {
       padding-top: 70px;
       padding-bottom: 70px;
+}
+.blog-content{
+    width: 100%;
+    height: 60vh;
+}
+.container a{
+    text-decoration: none;
+    color: black;
+}
+.errormsg{
+   color: red;
+}
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.btn-var-width{
+  width: 100%;
+}
+.btn-right{
+    float: right;
+}
+.btn-left{
+   float: left;
+}
+.btn-blog{
+ background-color: #868c92;
+ border-color: #0a0a0a;
+}
+.divider{
+    border: 1px solid #7d97ad;
+    margin: 2% 0px;
+}
+.small p{
+    margin: 0;
+}
+.font-large{
+    font-size: 1.5em;
+}
+.btn-blog:hover{
+    color: #fff;
+    background-color: #3c4348;
+    border-color: #0a0a0a;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-inline{
+  display: inline-flex;
+}
+.form-inline button{
+  margin: 0 12px;
+}
+.media-heading button{
+  background: transparent;
+  border: none;
 }

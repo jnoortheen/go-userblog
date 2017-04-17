@@ -1,0 +1,16 @@
+<%= form({action:"/auth", method: "POST", class:"form-signin", errors: errors}) { %>
+    <h2><%= action %></h2>
+    <%= f.InputTag({name:"userName", placeholder:"Username", required:"True", autofocus:"True", class:"form-control"})%>
+    <%= if(showEmailFld) {%>
+        <%= f.InputTag({name:"email", placeholder:"Email ID", class:"form-control", type:"email"})%>
+    <% } %>
+    <%= f.InputTag({name:"pwd", placeholder:"Password", required:"True", class:"form-control", type:"password"})%>
+    <%= if(showRememberMe) {%>
+        <div class="checkbox">
+            <label>
+                <input name="rememberMe" type="checkbox" value="remember-me">Remember me
+            </label>
+        </div>
+    <% } %>
+    <button class="btn btn-lg btn-primary btn-block" type="submit"><%= action %></button>
+<% } %>
