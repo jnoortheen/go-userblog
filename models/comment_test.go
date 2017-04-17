@@ -25,7 +25,7 @@ func (as *ModelSuite) Test_Comment() {
 
 	as.Equal(as.countObjects(models.Comment{}) - prevCount, 1)
 
-	comment = models.Comment{}
+	comment = &models.Comment{}
 	as.DB.First(comment)
 	as.Equal(commentContent, comment.Content)
 }

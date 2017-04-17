@@ -60,7 +60,7 @@ func (v PostsResource) Show(c buffalo.Context) error {
 	return c.Render(200, r.HTML("posts/show.html"))
 }
 
-// New renders the formular for creating a new post.
+// New renders the form for creating a new post.
 // This function is mapped to the path GET /posts/new
 func (v PostsResource) New(c buffalo.Context) error {
 	// Make post available inside the html template

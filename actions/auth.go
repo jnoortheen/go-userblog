@@ -3,6 +3,7 @@ package actions
 import (
 	"fmt"
 	"github.com/gobuffalo/buffalo"
+	"muserblog/models"
 )
 
 // for the given action (signin, signout, signup) renders the html page
@@ -15,7 +16,10 @@ func AuthFormHandler(c buffalo.Context) error {
 	case "signup":
 		pageTitle = "Sign-up"
 	}
+
 	c.Set("pageTitle", pageTitle)
+	c.Set("user", &models.User{})
+
 	return c.Render(200, r.HTML(fmt.Sprintf("auth/%s.html", c.Param("action"))))
 }
 
