@@ -22,3 +22,9 @@ func (bs *BloggySuite) NoValidationError(verrs *validate.Errors, err error) {
 	bs.NoError(err)
 	bs.NoError(verrs)
 }
+
+// assert no validation error happended
+func (bs *BloggySuite) HasValidationError(verrs *validate.Errors, err error, expectedValidationErrMsg string) {
+	bs.Error(err)
+	bs.EqualError(verrs, expectedValidationErrMsg)
+}

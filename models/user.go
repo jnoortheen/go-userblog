@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+const UniqUserNameErrMsg = "Username is already in use"
+
 type User struct {
 	ID        uuid.UUID    `json:"id" db:"id"`
 	CreatedAt time.Time    `json:"created_at" db:"created_at"`
@@ -44,7 +46,7 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	)
 	// check username is unique
 	if cnt, err := tx.Where("name = ?", u.Name).Count(User{}); cnt > 0 && err == nil {
-		errors.Add("Username", "Username is already in use")
+		errors.Add("Username", UniqUserNameErrMsg)
 	}
 	return errors, nil
 }

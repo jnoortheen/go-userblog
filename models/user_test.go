@@ -23,14 +23,7 @@ func (as *ModelSuite) Test_User() {
 
 	as.Equal(as.CountObjects(models.User{}) - prevCount, 1)
 
-	//user = userForTest()
-	//verr, err := as.DB.ValidateAndCreate(user)
-	//if verr.HasAny() {
-	//	fmt.Printf("%T", verr)
-	//	fmt.Println(verr, "this")
-	//}
-	//if err != nil {
-	//	fmt.Println(err, "that")
-	//}
-	//panic("fail")
+	user = userForTest()
+	verr, err := as.DB.ValidateAndCreate(user)
+	as.HasValidationError(verr, err, models.UniqUserNameErrMsg)
 }
