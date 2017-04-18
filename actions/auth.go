@@ -59,7 +59,7 @@ func AuthHandler(c buffalo.Context) error {
 			return c.Render(http.StatusUnprocessableEntity, r.HTML(fmt.Sprintf("auth/%s.html", c.Param("action"))))
 		}
 		c.Session().Set("auth_token", user.AuthToken())
-		return c.Redirect(http.StatusOK, "/")
+		return c.Redirect(http.StatusOK, "/posts")
 	}
 	return c.Redirect(http.StatusFound, fmt.Sprintf("/auth/%s", action))
 }

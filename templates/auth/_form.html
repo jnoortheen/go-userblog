@@ -1,10 +1,10 @@
-<%= form_for(user, {action:"/auth/"+url, method: "POST", class:"form-signin", errors: errors}) { %>
+<%= form_for(user, {action:"/auth/"+url, method: "POST", class:"form-signin", "errors": errors}) { %>
     <h2><%= action %></h2>
-    <%= f.InputTag("Name", {placeholder:"Username", required:"True", autofocus:"True", class:"form-control", hide_label: true})%>
+    <%= f.InputTag("Name", {placeholder:"Username", required:"True", autofocus:"True", hide_label: true})%>
     <%= if(showEmailFld) {%>
-        <%= f.InputTag("Email", {placeholder:"Email ID", class:"form-control", type:"email", hide_label: true})%>
+        <%= f.InputTag("Email", {placeholder:"Email ID", type:"email", hide_label: true})%>
     <% } %>
-    <%= f.InputTag("Pwd", {placeholder:"Password", required:"True", class:"form-control", type:"password", hide_label: true})%>
+    <%= f.InputTag("Pwd", {placeholder:"Password", required:"True", type:"password", hide_label: true})%>
     <%= if(showRememberMe) {%>
         <div class="checkbox">
             <label>

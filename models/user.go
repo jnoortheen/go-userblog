@@ -54,7 +54,7 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	)
 	// check username is unique
 	if cnt, err := tx.Where("name = ?", u.Name).Count(User{}); cnt > 0 && err == nil {
-		errors.Add("Username", UniqUserNameErrMsg)
+		errors.Add(validators.GenerateKey("Name"), UniqUserNameErrMsg)
 	}
 	return errors, nil
 }
