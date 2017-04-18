@@ -45,6 +45,8 @@ func App() *buffalo.App {
 		}
 		app.Use(T.Middleware())
 
+		app.Use(Authorizer)
+
 		postResource := PostsResource{&buffalo.BaseResource{}}
 		app.GET("/", postResource.List)
 
@@ -54,6 +56,7 @@ func App() *buffalo.App {
 		auth := app.Group("/auth")
 		auth.POST("/{action}", AuthHandler)
 		auth.GET("/{action}", AuthFormHandler)
+		//auth.Middleware.Skip(Authorizer, AuthHandler, AuthFormHandler)
 	}
 	return app
 }

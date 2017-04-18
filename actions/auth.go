@@ -6,6 +6,7 @@ import (
 	"muserblog/models"
 	"net/http"
 	"github.com/markbates/pop"
+	"strings"
 )
 
 const (
@@ -79,4 +80,24 @@ func AuthHandler(c buffalo.Context) error {
 	c.Session().Set(authTokenKeyName, user.AuthToken())
 	c.Session().Save()
 	return c.Redirect(http.StatusFound, "/posts")
+}
+
+// authorizer middleware
+func Authorizer(next buffalo.Handler) buffalo.Handler {
+	return func(c buffalo.Context) error {
+		auth_id := c.Session().Get(authTokenKeyName)
+		if auth_id != nil {
+			tx := c.Value("tx").(*pop.Connection)
+			user := &models.User{}
+			userId := strings.Split(auth_id.(string), "|")[0]
+			err := tx.Find(user, userId)
+			if err == nil {
+				c.Set("userSignedIn", true)
+				c.Set("user", user)
+			} else{
+				c.Session().Clear()
+			}
+		}
+		return next(c)
+	}
 }
