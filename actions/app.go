@@ -51,7 +51,7 @@ func App() *buffalo.App {
 		app.Resource("/posts", PostsResource{&buffalo.BaseResource{}})
 
 		auth := app.Group("/auth")
-		auth.POST("/", AuthHandler)
+		auth.POST("/{action}", AuthHandler)
 		auth.GET("/{action}", AuthFormHandler)
 	}
 	return app

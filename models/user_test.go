@@ -2,7 +2,6 @@ package models_test
 
 import (
 	"muserblog/models"
-	//"fmt"
 )
 
 var (
@@ -19,11 +18,24 @@ func (as *ModelSuite) Test_User() {
 	prevCount := as.CountObjects(models.User{})
 
 	user := userForTest()
-	as.NoValidationError(as.DB.ValidateAndCreate(user))
-
+	verr, err := as.DB.ValidateAndCreate(user)
+	as.NoError(err)
+	if verr.HasAny() {
+		as.Fail(verr.Error())
+	}
 	as.Equal(as.CountObjects(models.User{}) - prevCount, 1)
 
 	user = userForTest()
+	verr, err = as.DB.ValidateAndCreate(user)
+	as.EqualError(verr, models.UniqUserNameErrMsg)
+}
+
+func (as *ModelSuite) Test_UserHashFunction() {
+	user := userForTest()
 	verr, err := as.DB.ValidateAndCreate(user)
-	as.HasValidationError(verr, err, models.UniqUserNameErrMsg)
+	as.NoError(err)
+	if verr.HasAny() {
+		as.Fail(verr.Error())
+	}
+	as.Equal(user.AuthToken(), user.AuthToken())
 }

@@ -1,4 +1,4 @@
-<%= form_for(user, {action:"/auth", method: "POST", class:"form-signin", errors: errors}) { %>
+<%= form_for(user, {action:"/auth/"+url, method: "POST", class:"form-signin", errors: errors}) { %>
     <h2><%= action %></h2>
     <%= f.InputTag("Name", {placeholder:"Username", required:"True", autofocus:"True", class:"form-control", hide_label: true})%>
     <%= if(showEmailFld) {%>

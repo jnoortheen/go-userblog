@@ -1,16 +1,24 @@
 package models
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
 	"encoding/json"
+	"fmt"
+	"time"
+
 	"github.com/markbates/pop"
 	"github.com/markbates/pop/nulls"
 	"github.com/markbates/validate"
 	"github.com/markbates/validate/validators"
 	"github.com/satori/go.uuid"
-	"time"
 )
 
-const UniqUserNameErrMsg = "Username is already in use"
+const (
+	UniqUserNameErrMsg = "Username is already in use"
+	// keep this key separate when you are serious
+	encryptKey = "5cdaae38582e3f1f9a17f7025"
+)
 
 type User struct {
 	ID        uuid.UUID    `json:"id" db:"id"`
@@ -51,21 +59,34 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return errors, nil
 }
 
-// ValidateSave gets run everytime you call "pop.ValidateSave" method.
-// This method is not required and may be deleted.
-func (u *User) ValidateSave(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
-}
-
 // ValidateUpdate gets run everytime you call "pop.ValidateUpdate" method.
 // This method is not required and may be deleted.
 func (u *User) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }
 
-// get a new user struct that can directly be used to create user record using pop
+// SaltPassword set value for salt field and changes the plain text password to salted password in struct
+func (u *User) SaltPassword() {
+	u.Salt = uuid.NewV1()
+	u.Pwd = uuid.NewV3(u.Salt, u.Pwd).String()
+}
+
+// AuthToken generates a new authentication token every time called
+func (u *User) AuthToken() string {
+	strId := u.ID.String()
+	return fmt.Sprintf("%s|%s", strId, encryptMsg([]byte(strId)))
+}
+
+// NewUser get a new user struct that can directly be used to create user record using pop
 func NewUser(name string, plainPwd string, email string) *User {
-	salt := uuid.NewV1()
-	pwd := uuid.NewV3(salt, plainPwd).String()
-	return &User{Name: name, Email: nulls.String{String: email, Valid: true}, Pwd: pwd, Salt: salt}
+	user := &User{Name: name, Email: nulls.String{String: email, Valid: true}, Pwd: plainPwd}
+	user.SaltPassword()
+	return user
+}
+
+// EncryptMsg will encrypt the given message with default key
+func encryptMsg(msg []byte) []byte{
+	mac := hmac.New(sha256.New, []byte(encryptKey))
+	mac.Write([]byte(msg))
+	return mac.Sum(nil)
 }
