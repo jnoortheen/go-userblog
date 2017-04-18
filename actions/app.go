@@ -45,10 +45,11 @@ func App() *buffalo.App {
 		}
 		app.Use(T.Middleware())
 
-		app.GET("/", HomeHandler)
+		postResource := PostsResource{&buffalo.BaseResource{}}
+		app.GET("/", postResource.List)
 
 		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
-		app.Resource("/posts", PostsResource{&buffalo.BaseResource{}})
+		app.Resource("/posts", postResource)
 
 		auth := app.Group("/auth")
 		auth.POST("/{action}", AuthHandler)
