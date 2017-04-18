@@ -94,9 +94,19 @@ func Authorizer(next buffalo.Handler) buffalo.Handler {
 			if err == nil {
 				c.Set("userSignedIn", true)
 				c.Set("user", user)
-			} else{
+			} else {
 				c.Session().Clear()
 			}
+		}
+		return next(c)
+	}
+}
+
+func PostsAuthorizer(next buffalo.Handler) buffalo.Handler {
+	return func(c buffalo.Context) error {
+		user := c.Get("user")
+		if user == nil {
+			return c.Redirect(http.StatusTemporaryRedirect, "/auth/signin")
 		}
 		return next(c)
 	}

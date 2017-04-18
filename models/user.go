@@ -17,7 +17,7 @@ import (
 const (
 	UniqUserNameErrMsg = "Username is already in use"
 	CheckPwdErrMsg = "Check username or password"
-	// keep this key separate when you are serious
+	// keep this key separately
 	encryptKey = "5cdaae38582e3f1f9a17f7025"
 )
 

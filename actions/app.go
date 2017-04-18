@@ -47,16 +47,19 @@ func App() *buffalo.App {
 
 		app.Use(Authorizer)
 
-		postResource := PostsResource{&buffalo.BaseResource{}}
+		var postResource buffalo.Resource
+		postResource = &PostsResource{&buffalo.BaseResource{}}
 		app.GET("/", postResource.List)
 
 		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
-		app.Resource("/posts", postResource)
+
+		posts := app.Resource("/posts", postResource)
+		posts.Use(PostsAuthorizer)
+		posts.Middleware.Skip(PostsAuthorizer, postResource.List, postResource.Show)
 
 		auth := app.Group("/auth")
 		auth.POST("/{action}", AuthHandler)
 		auth.GET("/{action}", AuthFormHandler)
-		//auth.Middleware.Skip(Authorizer, AuthHandler, AuthFormHandler)
 	}
 	return app
 }
