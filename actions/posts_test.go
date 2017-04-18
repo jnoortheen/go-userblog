@@ -17,23 +17,21 @@ func postForTest() *models.Post {
 	return &models.Post{Title: postTitle, Content: postContent}
 }
 
-func countPosts(as *ActionSuite) int {
-	postsCount, err := as.DB.Count(models.Posts{})
-	as.NoError(err)
-	return postsCount
+func (as *ActionSuite) countPosts() int {
+	return as.Count(models.Post{})
 }
 
 func countPostsTo(as *ActionSuite, expectedCount int) {
-	as.Equal(expectedCount, countPosts(as))
+	as.Equal(expectedCount, as.countPosts())
 }
 
 // create a new post and return
 func createPost(as *ActionSuite) *models.Post {
-	prevCount := countPosts(as)
+	prevCount := as.countPosts()
 	post := postForTest()
 	as.NoError(as.DB.Create(post))
 	// check exactly one new record is created
-	as.Equal(countPosts(as)-prevCount, 1)
+	as.Equal(as.countPosts()-prevCount, 1)
 	return post
 }
 

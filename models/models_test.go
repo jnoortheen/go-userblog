@@ -14,10 +14,9 @@ func Test_ModelSuite(t *testing.T) {
 	suite.Run(t, as)
 }
 
-
 // count and assert no error happens
 func (as *ModelSuite) CountObjects(model interface{}) int {
-	usersCount, err := as.DB.Count(model)
+	cnt, err := as.DB.Count(model)
 	as.NoError(err)
-	return usersCount
+	return cnt
 }
