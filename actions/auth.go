@@ -11,6 +11,7 @@ import (
 const (
 	signin = "signin"
 	signup = "signup"
+	authTokenKeyName = "auth_token"
 )
 
 var pageTitleForAction = map[string]string{signin:"Sign-in", signup: "Sign-up"}
@@ -43,11 +44,27 @@ func AuthHandler(c buffalo.Context) error {
 		return err
 	}
 
+	tx := c.Value("tx").(*pop.Connection)
 	switch action {
 	case signin:
-		fmt.Println("user signin", user)
+		// check empty username/pwd
+		verr, err := user.Validate(tx)
+		if err != nil {
+			return err
+		}
+		if verr.HasAny() {
+			c.Set("user", user)
+			c.Set("errors", verr)
+			return c.Render(http.StatusUnprocessableEntity, r.HTML(fmt.Sprintf("auth/%s.html", c.Param("action"))))
+		}
+		// check password
+		verr = user.CheckPassword(tx)
+		if verr.HasAny() {
+			c.Set("user", user)
+			c.Set("errors", verr)
+			return c.Render(http.StatusUnprocessableEntity, r.HTML(fmt.Sprintf("auth/%s.html", c.Param("action"))))
+		}
 	case signup:
-		tx := c.Value("tx").(*pop.Connection)
 		user.SaltPassword()
 		verr, err := tx.ValidateAndCreate(user)
 		if err != nil {
@@ -58,8 +75,8 @@ func AuthHandler(c buffalo.Context) error {
 			c.Set("errors", verr)
 			return c.Render(http.StatusUnprocessableEntity, r.HTML(fmt.Sprintf("auth/%s.html", c.Param("action"))))
 		}
-		c.Session().Set("auth_token", user.AuthToken())
-		return c.Redirect(http.StatusOK, "/posts")
 	}
-	return c.Redirect(http.StatusFound, fmt.Sprintf("/auth/%s", action))
+	c.Session().Set(authTokenKeyName, user.AuthToken())
+	c.Session().Save()
+	return c.Redirect(http.StatusFound, "/posts")
 }

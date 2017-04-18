@@ -16,6 +16,7 @@ import (
 
 const (
 	UniqUserNameErrMsg = "Username is already in use"
+	CheckPwdErrMsg = "Check username or password"
 	// keep this key separate when you are serious
 	encryptKey = "5cdaae38582e3f1f9a17f7025"
 )
@@ -46,12 +47,30 @@ func (u Users) String() string {
 }
 
 // Validate gets run everytime you call a "pop.Validate" method.
-// This method is not required and may be deleted.
 func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	errors := validate.Validate(
 		&validators.StringIsPresent{Field: u.Name, Name: "Name"},
 		&validators.StringIsPresent{Field: u.Pwd, Name: "Pwd"},
 	)
+	return errors, nil
+}
+
+// CheckPassword call this method on a new struct with plain password. It looks up in DB for username and
+// checks with salted password
+func (u *User) CheckPassword(tx *pop.Connection) (*validate.Errors) {
+	plainPwd := u.Pwd
+	verrs := validate.NewErrors()
+	if err := tx.Where("name = ?", u.Name).First(u); err != nil {
+		fmt.Println("got error finding username", err)
+		verrs.Add(validators.GenerateKey("Pwd"), CheckPwdErrMsg)
+	}else if u.Pwd != (uuid.NewV3(u.Salt, plainPwd).String()) {
+		verrs.Add(validators.GenerateKey("Pwd"), CheckPwdErrMsg)
+	}
+
+	return verrs
+}
+
+func (u *User) ValidateUniqUsername(tx *pop.Connection, errors *validate.Errors) (*validate.Errors, error) {
 	// check username is unique
 	if cnt, err := tx.Where("name = ?", u.Name).Count(User{}); cnt > 0 && err == nil {
 		errors.Add(validators.GenerateKey("Name"), UniqUserNameErrMsg)
@@ -59,10 +78,19 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return errors, nil
 }
 
+// ValidateSave gets run everytime you call "pop.ValidateSave" method.
+func (u *User) ValidateSave(tx *pop.Connection) (*validate.Errors, error) {
+	return u.ValidateUniqUsername(tx, validate.NewErrors())
+}
+
+// ValidateCreate gets run everytime you call "pop.ValidateCreate" method.
+func (u *User) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
+	return u.ValidateUniqUsername(tx, validate.NewErrors())
+}
+
 // ValidateUpdate gets run everytime you call "pop.ValidateUpdate" method.
-// This method is not required and may be deleted.
 func (u *User) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
+	return u.ValidateUniqUsername(tx, validate.NewErrors())
 }
 
 // SaltPassword set value for salt field and changes the plain text password to salted password in struct
@@ -71,7 +99,7 @@ func (u *User) SaltPassword() {
 	u.Pwd = uuid.NewV3(u.Salt, u.Pwd).String()
 }
 
-// AuthToken generates a new authentication token every time called
+// AuthToken generates a new encrypted authentication token with user id
 func (u *User) AuthToken() string {
 	strId := u.ID.String()
 	return fmt.Sprintf("%s|%s", strId, encryptMsg([]byte(strId)))
@@ -85,7 +113,7 @@ func NewUser(name string, plainPwd string, email string) *User {
 }
 
 // EncryptMsg will encrypt the given message with default key
-func encryptMsg(msg []byte) []byte{
+func encryptMsg(msg []byte) []byte {
 	mac := hmac.New(sha256.New, []byte(encryptKey))
 	mac.Write([]byte(msg))
 	return mac.Sum(nil)
