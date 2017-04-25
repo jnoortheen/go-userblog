@@ -24,7 +24,7 @@ func AuthFormHandler(c buffalo.Context) error {
 	switch action {
 	case "signout":
 		store := c.Session()
-		store.Clear()
+		store.Delete(authTokenKeyName)
 		c.Flash().Add("success", "Signed out successfully")
 		return c.Redirect(http.StatusFound, "/auth/signin")
 	}
