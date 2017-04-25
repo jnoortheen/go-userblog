@@ -7,15 +7,16 @@ import (
 	"net/http"
 	"github.com/markbates/pop"
 	"strings"
+	"errors"
 )
 
 const (
-	signin = "signin"
-	signup = "signup"
+	signin           = "signin"
+	signup           = "signup"
 	authTokenKeyName = "auth_token"
 )
 
-var pageTitleForAction = map[string]string{signin:"Sign-in", signup: "Sign-up"}
+var pageTitleForAction = map[string]string{signin: "Sign-in", signup: "Sign-up"}
 
 // for the given action (signin, signout, signup) renders the html page
 func AuthFormHandler(c buffalo.Context) error {
@@ -48,7 +49,7 @@ func AuthHandler(c buffalo.Context) error {
 	tx := c.Value("tx").(*pop.Connection)
 	switch action {
 	case signin:
-		// check empty username/pwd
+		// check whether user have entered empty username/pwd into forms fields
 		verr, err := user.Validate(tx)
 		if err != nil {
 			return err
@@ -76,7 +77,19 @@ func AuthHandler(c buffalo.Context) error {
 			c.Set("errors", verr)
 			return c.Render(http.StatusUnprocessableEntity, r.HTML(fmt.Sprintf("auth/%s.html", c.Param("action"))))
 		}
+		c.Flash().Add("success", "Account created successfully!")
+		return c.Redirect(http.StatusFound, "/auth/signin")
+	default:
+		return c.Error(http.StatusNotFound, errors.New("not found"))
 	}
+	//authCookie := &http.Cookie{Name: authTokenKeyName, Value: user.AuthToken(), Secure: true}
+	//authCookie := http.Cookie{Name: authTokenKeyName, Value: "usertoken", Secure: true}
+	//if c.Request().Form.Get("rememberMe") == "true" {
+	//	// set 7 days of expiration
+	//	authCookie.Expires = time.Now().Add(7 * 24 * time.Hour)
+	//}
+	//w := c.Response()
+	//http.SetCookie(w, &authCookie)
 	c.Session().Set(authTokenKeyName, user.AuthToken())
 	c.Session().Save()
 	return c.Redirect(http.StatusFound, "/posts")
@@ -104,9 +117,9 @@ func Authorizer(next buffalo.Handler) buffalo.Handler {
 
 func PostsAuthorizer(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
-		user := c.Get("user")
+		user := c.Value("user")
 		if user == nil {
-			return c.Redirect(http.StatusTemporaryRedirect, "/auth/signin")
+			return c.Redirect(http.StatusFound, "/auth/signin")
 		}
 		return next(c)
 	}

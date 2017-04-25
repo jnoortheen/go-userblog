@@ -1,10 +1,10 @@
 development:
   dialect: "sqlite3"
-  database: {{env "GOPATH" }}/muserblog/muserblog_development.sqlite
+  database: {{env "GOPATH" }}/src/muserblog/muserblog_development.sqlite
 
 test:
   dialect: "sqlite3"
-  database: {{env "GOPATH" }}/muserblog/muserblog_test.sqlite
+  database: {{env "GOPATH" }}/src/muserblog/tmp/muserblog_test.sqlite
 
 production:
   dialect: "sqlite3"
