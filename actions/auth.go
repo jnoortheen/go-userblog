@@ -82,16 +82,18 @@ func AuthHandler(c buffalo.Context) error {
 	default:
 		return c.Error(http.StatusNotFound, errors.New("not found"))
 	}
-	//authCookie := &http.Cookie{Name: authTokenKeyName, Value: user.AuthToken(), Secure: true}
-	//authCookie := http.Cookie{Name: authTokenKeyName, Value: "usertoken", Secure: true}
-	//if c.Request().Form.Get("rememberMe") == "true" {
-	//	// set 7 days of expiration
-	//	authCookie.Expires = time.Now().Add(7 * 24 * time.Hour)
-	//}
-	//w := c.Response()
-	//http.SetCookie(w, &authCookie)
+
+	if c.Request().Form.Get("rememberMe") == "true" {
+		// set expiration date as 7 days for the underlying cookie implementation
+		Store.MaxAge(7 * 24 * 60 * 60)
+	}else{
+		// set session cookie
+		Store.MaxAge(0)
+	}
+
 	c.Session().Set(authTokenKeyName, user.AuthToken())
 	c.Session().Save()
+
 	return c.Redirect(http.StatusFound, "/posts")
 }
 

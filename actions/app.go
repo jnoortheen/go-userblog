@@ -10,11 +10,14 @@ import (
 
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packr"
+	"github.com/gorilla/sessions"
 )
 
 // ENV is used to help switch settings based on where the
 // application is being run. Default is "development".
+var secret string = envy.Get("SESSION_SECRET", "$RT4rt@90")
 var ENV = envy.Get("GO_ENV", "development")
+var Store = sessions.NewCookieStore([]byte(secret))
 var app *buffalo.App
 var T *i18n.Translator
 
@@ -24,8 +27,9 @@ var T *i18n.Translator
 func App() *buffalo.App {
 	if app == nil {
 		app = buffalo.Automatic(buffalo.Options{
-			Env:         ENV,
-			SessionName: "_muserblog_session",
+			Env:          ENV,
+			SessionName:  "_muserblog_session",
+			SessionStore: Store,
 		})
 		if ENV == "development" {
 			app.Use(middleware.ParameterLogger)
