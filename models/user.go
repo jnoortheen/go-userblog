@@ -61,7 +61,6 @@ func (u *User) CheckPassword(tx *pop.Connection) (*validate.Errors) {
 	plainPwd := u.Pwd
 	verrs := validate.NewErrors()
 	if err := tx.Where("name = ?", u.Name).First(u); err != nil {
-		fmt.Println("got error finding username", err)
 		verrs.Add(validators.GenerateKey("Pwd"), CheckPwdErrMsg)
 	}else if u.Pwd != (uuid.NewV3(u.Salt, plainPwd).String()) {
 		verrs.Add(validators.GenerateKey("Pwd"), CheckPwdErrMsg)
