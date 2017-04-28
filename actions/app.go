@@ -50,6 +50,7 @@ func App() *buffalo.App {
 		app.Use(T.Middleware())
 
 		app.Use(Authorizer)
+		app.Use(UrlParamsToContextMw)
 
 		var postResource buffalo.Resource
 		postResource = &PostsResource{&buffalo.BaseResource{}}

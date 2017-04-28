@@ -6,6 +6,7 @@ import (
 	"muserblog/models"
 	"github.com/pkg/errors"
 	"net/http"
+	"net/url"
 )
 
 // Following naming logic is implemented in Buffalo:
@@ -18,6 +19,18 @@ import (
 // PostsResource is the resource for the post model
 type PostsResource struct {
 	buffalo.Resource
+}
+
+// if the URL contains an `id` then set the relevant post_id
+func UrlParamsToContextMw(next buffalo.Handler) buffalo.Handler {
+	return func(c buffalo.Context) error {
+		if urlParams, ok := c.Params().(url.Values); ok {
+			for param, val := range urlParams {
+				c.Set(param, val)
+			}
+		}
+		return next(c)
+	}
 }
 
 // List gets all Posts. This function is mapped to the the path
@@ -52,6 +65,11 @@ func (v PostsResource) Show(c buffalo.Context) error {
 	if err != nil {
 		return err
 	}
+
+	// check for author
+	user, ok := c.Get("user").(*models.User)
+	c.Set("editablePost", (ok && post.UserID == user.ID))
+
 	// Make post available inside the html template
 	c.Set("post", post)
 	return c.Render(200, r.HTML("posts/show.html"))
@@ -115,8 +133,8 @@ func (v PostsResource) Edit(c buffalo.Context) error {
 	}
 	// checking author field
 	user := c.Get("user").(*models.User)
-	if user.ID == post.UserID {
-		c.Set("editablePost", true)
+	if user.ID != post.UserID {
+		return c.Error(http.StatusUnauthorized, errors.New("User is not authorized to edit this post"))
 	}
 	// Make post available inside the html template
 	c.Set("post", post)
