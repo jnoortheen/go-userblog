@@ -16,7 +16,7 @@ import (
 
 const (
 	UniqUserNameErrMsg = "Username is already in use"
-	CheckPwdErrMsg = "Check username or password"
+	CheckPwdErrMsg     = "Check username or password"
 	// keep this key separately
 	encryptKey = "5cdaae38582e3f1f9a17f7025"
 )
@@ -55,14 +55,19 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return errors, nil
 }
 
+// finds and fills user struct from DB using name
+func (u *User) WithName(tx *pop.Connection) error {
+	return tx.Where("name = ?", u.Name).First(u)
+}
+
 // CheckPassword call this method on a new struct with plain password. It looks up in DB for username and
 // checks with salted password
 func (u *User) CheckPassword(tx *pop.Connection) (*validate.Errors) {
 	plainPwd := u.Pwd
 	verrs := validate.NewErrors()
-	if err := tx.Where("name = ?", u.Name).First(u); err != nil {
+	if err := u.WithName(tx); err != nil {
 		verrs.Add(validators.GenerateKey("Pwd"), CheckPwdErrMsg)
-	}else if u.Pwd != (uuid.NewV3(u.Salt, plainPwd).String()) {
+	} else if u.Pwd != (uuid.NewV3(u.Salt, plainPwd).String()) {
 		verrs.Add(validators.GenerateKey("Pwd"), CheckPwdErrMsg)
 	}
 
