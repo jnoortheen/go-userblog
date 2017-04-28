@@ -27,6 +27,20 @@ func userForTest() *models.User {
 	return &models.User{Name: usrName, Email: nulls.NewString(usrEmail), Pwd: usrPwd}
 }
 
+func signinUser(as *ActionSuite, user *models.User) {
+	// creates a new user record
+	tUser := *user
+	tUser.SaltPassword()
+	as.NoError(as.DB.Create(&tUser))
+
+	// ensure that session cookie is present
+	res := as.HTML("/").Get()
+
+	// logins that user
+	res = as.HTML(signinPath).Post(user)
+	as.Equal(http.StatusFound, res.Code)
+}
+
 func (as *ActionSuite) Test_GetAuthFormHanlers() {
 	// test sign in
 	res := as.HTML(signinPath).Get()
