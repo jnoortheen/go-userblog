@@ -67,8 +67,9 @@ func (v PostsResource) Show(c buffalo.Context) error {
 	}
 
 	// check for author
-	user, ok := c.Get("user").(*models.User)
+	user, ok := c.Value("user").(*models.User)
 	c.Set("editablePost", (ok && post.UserID == user.ID))
+	c.Set("pageTitle", post.Title)
 
 	// Make post available inside the html template
 	c.Set("post", post)

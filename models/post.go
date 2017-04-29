@@ -53,3 +53,24 @@ func (p *Post) ValidateSave(tx *pop.Connection) (*validate.Errors, error) {
 func (p *Post) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }
+
+// return the author of the post
+func (p *Post) Author(tx *pop.Connection) *User {
+	user := &User{}
+	tx.Find(user, p.UserID)
+	return user
+}
+
+// return whether the given user has liked the post or not
+func (p *Post) LikedBy(tx *pop.Connection, user *User) bool {
+	cnt, err := tx.BelongsTo(p).BelongsTo(user).Count(&Like{})
+	return err == nil && cnt > 0
+}
+
+func (p *Post) LikesCount(tx *pop.Connection) int {
+	cnt, err := tx.BelongsTo(p).Count(&Like{})
+	if err == nil {
+		return cnt
+	}
+	return 0
+}
