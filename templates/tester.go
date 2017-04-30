@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"github.com/gobuffalo/plush"
 	"io/ioutil"
 	"log"
-	"github.com/gobuffalo/plush"
-	"fmt"
 )
 
 func main() {

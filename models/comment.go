@@ -2,13 +2,15 @@ package models
 
 import (
 	"encoding/json"
+	"time"
+
 	"github.com/markbates/pop"
 	"github.com/markbates/validate"
 	"github.com/markbates/validate/validators"
 	"github.com/satori/go.uuid"
-	"time"
 )
 
+// Comment is mapped to comment db_table/form/json
 type Comment struct {
 	ID        uuid.UUID `json:"id" db:"id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`

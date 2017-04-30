@@ -1,10 +1,11 @@
 package actions
 
 import (
+	"log"
+
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/middleware"
 	"github.com/gobuffalo/buffalo/middleware/i18n"
-	"log"
 
 	"muserblog/models"
 
@@ -13,12 +14,17 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+var secret = envy.Get("SESSION_SECRET", "$RT4rt@90")
+var app *buffalo.App
+
 // ENV is used to help switch settings based on where the
 // application is being run. Default is "development".
-var secret string = envy.Get("SESSION_SECRET", "$RT4rt@90")
 var ENV = envy.Get("GO_ENV", "development")
+
+// Store session store
 var Store = sessions.NewCookieStore([]byte(secret))
-var app *buffalo.App
+
+// T language translator middleware provider
 var T *i18n.Translator
 
 // App is where all routes and middleware for buffalo
@@ -50,7 +56,7 @@ func App() *buffalo.App {
 		app.Use(T.Middleware())
 
 		app.Use(Authorizer)
-		app.Use(UrlParamsToContextMw)
+		app.Use(URLParamsToContextMw)
 
 		var postResource buffalo.Resource
 		postResource = &PostsResource{&buffalo.BaseResource{}}

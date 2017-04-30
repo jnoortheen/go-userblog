@@ -30,27 +30,26 @@ let likesCount = post.LikesCount(tx)
 
 <!--portion for like/dislike button-->
 <div class="row">
-    <div class="col-md-12 font-large">
+    <div class="col-md-12">
         <a id="likeBtn" class="btn btn-default">
-        <%= if(post.LikedBy(tx, user)) { %>
+        <%= if((userSignedIn == "true") && post.LikedBy(tx, user)) { %>
             <span class="glyphicon glyphicon-heart"></span> UnLike
         <% } else { %>
             <span class="glyphicon glyphicon-heart-empty"></span> Like
         <% } %>
             | <%= likesCount %>
         </a>
-
-        <%= if(!userSignedIn) { %>
-            <p>Please signin to like or post comments.</p>
-        <% } %>
+        <p id="reqLoginMsg" class="hide">Please signin to like or post comments.</p>
     </div>
 </div>
 <br/>
-
 <%= contentFor("script") { %>
 <script type="text/javascript">
+    var userSignedIn = <%= userSignedIn %>;
     $("#likeBtn").click(function () {
-        console.log("called");
+        if(!userSignedIn) {
+            $("#reqLoginMsg").removeClass("hide");
+        }
     })
 </script>
 <% } %>

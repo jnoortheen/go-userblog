@@ -14,5 +14,5 @@ func (as *ModelSuite) Test_Like() {
 	comment := &models.Like{PostID: post.ID, UserID: user.ID}
 	as.NoError(as.DB.Create(comment))
 
-	as.Equal(as.CountObjects(models.Like{}) - prevCount, 1)
+	as.Equal(as.CountObjects(models.Like{})-prevCount, 1)
 }

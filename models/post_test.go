@@ -1,17 +1,17 @@
 package models_test
 
 import (
-	"muserblog/models"
 	"github.com/satori/go.uuid"
+	"muserblog/models"
 )
 
 var (
-	postTitle = "Post 1"
+	postTitle   = "Post 1"
 	postContent = "Post 1 content"
 )
 
 func postForTest(user_id uuid.UUID) *models.Post {
-	return &models.Post{Title: postTitle, Content: postContent, UserID:user_id}
+	return &models.Post{Title: postTitle, Content: postContent, UserID: user_id}
 }
 
 func (as *ModelSuite) Test_Post() {
@@ -22,7 +22,7 @@ func (as *ModelSuite) Test_Post() {
 
 	as.NoError(as.DB.Create(postForTest(user.ID)))
 
-	as.Equal(as.CountObjects(models.Post{}) - prevCount, 1)
+	as.Equal(as.CountObjects(models.Post{})-prevCount, 1)
 
 	user = &models.User{}
 	as.DB.First(user)

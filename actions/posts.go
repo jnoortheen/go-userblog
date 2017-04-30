@@ -1,12 +1,13 @@
 package actions
 
 import (
-	"github.com/gobuffalo/buffalo"
-	"github.com/markbates/pop"
 	"muserblog/models"
-	"github.com/pkg/errors"
 	"net/http"
 	"net/url"
+
+	"github.com/gobuffalo/buffalo"
+	"github.com/markbates/pop"
+	"github.com/pkg/errors"
 )
 
 // Following naming logic is implemented in Buffalo:
@@ -21,8 +22,8 @@ type PostsResource struct {
 	buffalo.Resource
 }
 
-// if the URL contains an `id` then set the relevant post_id
-func UrlParamsToContextMw(next buffalo.Handler) buffalo.Handler {
+// URLParamsToContextMw if the URL contains an `id` then set the relevant post_id
+func URLParamsToContextMw(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
 		if urlParams, ok := c.Params().(url.Values); ok {
 			for param, val := range urlParams {

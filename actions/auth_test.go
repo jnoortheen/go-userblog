@@ -1,10 +1,10 @@
 package actions_test
 
 import (
-	"muserblog/models"
-	"net/http"
 	"github.com/markbates/pop/nulls"
 	"github.com/markbates/willie"
+	"muserblog/models"
+	"net/http"
 )
 
 func (as *ActionSuite) countUsers() int {

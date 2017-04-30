@@ -2,12 +2,14 @@ package models
 
 import (
 	"encoding/json"
+	"time"
+
 	"github.com/markbates/pop"
 	"github.com/markbates/validate"
 	"github.com/satori/go.uuid"
-	"time"
 )
 
+// Like table struct
 type Like struct {
 	ID        uuid.UUID `json:"id" db:"id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`

@@ -5,9 +5,9 @@ import (
 )
 
 var (
-	userName = "test_user"
+	userName     = "test_user"
 	userPwdPlain = "password"
-	userEmail = "user@mail.com"
+	userEmail    = "user@mail.com"
 )
 
 func userForTest() *models.User {
@@ -23,7 +23,7 @@ func (as *ModelSuite) Test_User() {
 	if verr.HasAny() {
 		as.Fail(verr.Error())
 	}
-	as.Equal(as.CountObjects(models.User{}) - prevCount, 1)
+	as.Equal(as.CountObjects(models.User{})-prevCount, 1)
 
 	user = userForTest()
 	verr, err = as.DB.ValidateAndCreate(user)

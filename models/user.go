@@ -15,12 +15,15 @@ import (
 )
 
 const (
+	// UniqUserNameErrMsg error message
 	UniqUserNameErrMsg = "Username is already in use"
-	CheckPwdErrMsg     = "Check username or password"
+	// CheckPwdErrMsg error msg
+	CheckPwdErrMsg = "Check username or password"
 	// keep this key separately
 	encryptKey = "5cdaae38582e3f1f9a17f7025"
 )
 
+// User db table struct
 type User struct {
 	ID        uuid.UUID    `json:"id" db:"id"`
 	CreatedAt time.Time    `json:"created_at" db:"created_at"`
@@ -55,14 +58,14 @@ func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return errors, nil
 }
 
-// finds and fills user struct from DB using name
+// WithName finds and fills user struct from DB using name
 func (u *User) WithName(tx *pop.Connection) error {
 	return tx.Where("name = ?", u.Name).First(u)
 }
 
 // CheckPassword call this method on a new struct with plain password. It looks up in DB for username and
 // checks with salted password
-func (u *User) CheckPassword(tx *pop.Connection) (*validate.Errors) {
+func (u *User) CheckPassword(tx *pop.Connection) *validate.Errors {
 	plainPwd := u.Pwd
 	verrs := validate.NewErrors()
 	if err := u.WithName(tx); err != nil {
@@ -74,6 +77,7 @@ func (u *User) CheckPassword(tx *pop.Connection) (*validate.Errors) {
 	return verrs
 }
 
+// ValidateUniqUsername validates the username is unique and already not taken
 func (u *User) ValidateUniqUsername(tx *pop.Connection, errors *validate.Errors) (*validate.Errors, error) {
 	// check username is unique
 	if cnt, err := tx.Where("name = ?", u.Name).Count(User{}); cnt > 0 && err == nil {
@@ -105,8 +109,8 @@ func (u *User) SaltPassword() {
 
 // AuthToken generates a new encrypted authentication token with user id
 func (u *User) AuthToken() string {
-	strId := u.ID.String()
-	return fmt.Sprintf("%s|%s", strId, encryptMsg([]byte(strId)))
+	strID := u.ID.String()
+	return fmt.Sprintf("%s|%s", strID, encryptMsg([]byte(strID)))
 }
 
 // NewUser get a new user struct that can directly be used to create user record using pop

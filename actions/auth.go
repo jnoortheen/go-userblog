@@ -1,13 +1,14 @@
 package actions
 
 import (
+	"errors"
 	"fmt"
-	"github.com/gobuffalo/buffalo"
 	"muserblog/models"
 	"net/http"
-	"github.com/markbates/pop"
 	"strings"
-	"errors"
+
+	"github.com/gobuffalo/buffalo"
+	"github.com/markbates/pop"
 )
 
 const (
@@ -18,7 +19,7 @@ const (
 
 var pageTitleForAction = map[string]string{signin: "Sign-in", signup: "Sign-up"}
 
-// for the given action (signin, signout, signup) renders the html page
+// AuthFormHandler for the given action (signin, signout, signup) renders the html page
 func AuthFormHandler(c buffalo.Context) error {
 	action := c.Param("action")
 	switch action {
@@ -35,7 +36,7 @@ func AuthFormHandler(c buffalo.Context) error {
 	return c.Render(200, r.HTML(fmt.Sprintf("auth/%s.html", c.Param("action"))))
 }
 
-// for the post action of (signin, signup) create/login user
+// AuthHandler for the post action of (signin, signup) create/login user
 func AuthHandler(c buffalo.Context) error {
 	user := &models.User{}
 	action := c.Param("action")
@@ -86,7 +87,7 @@ func AuthHandler(c buffalo.Context) error {
 	if c.Request().Form.Get("rememberMe") == "true" {
 		// set expiration date as 7 days for the underlying cookie implementation
 		Store.MaxAge(7 * 24 * 60 * 60)
-	}else{
+	} else {
 		// set session cookie
 		Store.MaxAge(0)
 	}
@@ -97,30 +98,33 @@ func AuthHandler(c buffalo.Context) error {
 	return c.Redirect(http.StatusFound, "/posts")
 }
 
-// authorizer middleware
+// Authorizer middleware
 func Authorizer(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
-		auth_id := c.Session().Get(authTokenKeyName)
-		if auth_id != nil {
+		if authID := c.Session().Get(authTokenKeyName); authID != nil {
 			tx := c.Value("tx").(*pop.Connection)
 			user := &models.User{}
-			userId := strings.Split(auth_id.(string), "|")[0]
-			err := tx.Find(user, userId)
+			userID := strings.Split(authID.(string), "|")[0]
+			err := tx.Find(user, userID)
 			if err == nil {
-				c.Set("userSignedIn", true)
 				c.Set("user", user)
 			} else {
 				c.Session().Clear()
 			}
 		}
+		if c.Value("user") != nil {
+			c.Set("userSignedIn", "true")
+		} else {
+		c.Set("userSignedIn", "false")
+		}
 		return next(c)
 	}
 }
 
+// PostsAuthorizer middleware redirects if user is not logged in
 func PostsAuthorizer(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
-		user := c.Value("user")
-		if user == nil {
+		if c.Value("userSignedIn") == "false" {
 			return c.Redirect(http.StatusFound, "/auth/signin")
 		}
 		return next(c)

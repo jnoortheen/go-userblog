@@ -2,13 +2,15 @@ package models
 
 import (
 	"encoding/json"
+	"time"
+
 	"github.com/markbates/pop"
 	"github.com/markbates/validate"
 	"github.com/markbates/validate/validators"
 	"github.com/satori/go.uuid"
-	"time"
 )
 
+// Post db table struct
 type Post struct {
 	ID        uuid.UUID `json:"id" db:"id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
@@ -54,19 +56,23 @@ func (p *Post) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }
 
-// return the author of the post
+// Author return the author of the post
 func (p *Post) Author(tx *pop.Connection) *User {
 	user := &User{}
 	tx.Find(user, p.UserID)
 	return user
 }
 
-// return whether the given user has liked the post or not
+// LikedBy return whether the given user has liked the post or not
 func (p *Post) LikedBy(tx *pop.Connection, user *User) bool {
-	cnt, err := tx.BelongsTo(p).BelongsTo(user).Count(&Like{})
-	return err == nil && cnt > 0
+	if user != nil {
+		cnt, err := tx.BelongsTo(p).BelongsTo(user).Count(&Like{})
+		return err == nil && cnt > 0
+	}
+	return false
 }
 
+// LikesCount return number of users liked posts so far
 func (p *Post) LikesCount(tx *pop.Connection) int {
 	cnt, err := tx.BelongsTo(p).Count(&Like{})
 	if err == nil {
