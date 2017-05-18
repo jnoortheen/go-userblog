@@ -36,7 +36,6 @@ func (p Posts) String() string {
 }
 
 // Validate gets run everytime you call a "pop.Validate" method.
-// This method is not required and may be deleted.
 func (p *Post) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.Validate(
 		&validators.StringIsPresent{Field: p.Title, Name: "Title"},
@@ -45,13 +44,11 @@ func (p *Post) Validate(tx *pop.Connection) (*validate.Errors, error) {
 }
 
 // ValidateSave gets run everytime you call "pop.ValidateSave" method.
-// This method is not required and may be deleted.
 func (p *Post) ValidateSave(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }
 
 // ValidateUpdate gets run everytime you call "pop.ValidateUpdate" method.
-// This method is not required and may be deleted.
 func (p *Post) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }

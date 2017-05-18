@@ -26,6 +26,7 @@ func AuthFormHandler(c buffalo.Context) error {
 	case "signout":
 		store := c.Session()
 		store.Delete(authTokenKeyName)
+		store.Save()
 		c.Flash().Add("success", "Signed out successfully")
 		return c.Redirect(http.StatusFound, "/auth/signin")
 	}
@@ -113,9 +114,9 @@ func Authorizer(next buffalo.Handler) buffalo.Handler {
 			}
 		}
 		if c.Value("user") != nil {
-			c.Set("userSignedIn", "true")
+			c.Set("userSignedIn", true)
 		} else {
-		c.Set("userSignedIn", "false")
+			c.Set("userSignedIn", false)
 		}
 		return next(c)
 	}
@@ -124,7 +125,7 @@ func Authorizer(next buffalo.Handler) buffalo.Handler {
 // PostsAuthorizer middleware redirects if user is not logged in
 func PostsAuthorizer(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
-		if c.Value("userSignedIn") == "false" {
+		if c.Value("userSignedIn").(bool) {
 			return c.Redirect(http.StatusFound, "/auth/signin")
 		}
 		return next(c)

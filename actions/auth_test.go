@@ -104,4 +104,5 @@ func (as *ActionSuite) Test_UserSigninProcess() {
 	res = as.HTML(signoutPath).Get()
 	res = as.HTML(res.Location()).Get()
 	as.Contains(res.Body.String(), "Signed out successfully")
+	as.Contains(res.Body.String(), "Signin")
 }
