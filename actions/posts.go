@@ -150,6 +150,7 @@ func (v PostsResource) Update(c buffalo.Context) error {
 	tx := c.Value("tx").(*pop.Connection)
 	// Allocate an empty Post
 	post := &models.Post{}
+	// get post from database
 	err := tx.Find(post, c.Param("post_id"))
 	if err != nil {
 		return err

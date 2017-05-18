@@ -71,6 +71,8 @@ func App() *buffalo.App {
 		auth := app.Group("/auth")
 		auth.POST("/{action}", AuthHandler)
 		auth.GET("/{action}", AuthFormHandler)
+
+		app.POST("/like", LikeUpdate)
 	}
 	return app
 }

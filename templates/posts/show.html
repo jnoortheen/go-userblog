@@ -31,25 +31,45 @@ let likesCount = post.LikesCount(tx)
 <!--portion for like/dislike button-->
 <div class="row">
     <div class="col-md-12">
+        <input type="hidden" name="post_id" value="<%= post_id %>">
         <a id="likeBtn" class="btn btn-default">
-        <%= if((userSignedIn == "true") && post.LikedBy(tx, user)) { %>
-            <span class="glyphicon glyphicon-heart"></span> UnLike
-        <% } else { %>
-            <span class="glyphicon glyphicon-heart-empty"></span> Like
-        <% } %>
-            | <%= likesCount %>
+            <span class="glyphicon"></span>
+            <span class="txt"></span>
+            | <span class="like-count"><%= likesCount %></span>
         </a>
+        <% } %>
         <p id="reqLoginMsg" class="hide">Please signin to like or post comments.</p>
     </div>
 </div>
 <br/>
+
 <%= contentFor("script") { %>
 <script type="text/javascript">
-    var userSignedIn = <%= userSignedIn %>;
-    $("#likeBtn").click(function () {
-        if(!userSignedIn) {
+    var likeBtn = $("#likeBtn");
+    var userSignedIn = eval("<%= userSignedIn %>");
+    //    initial value for the like button
+    var userLikedThisPost = eval("<%= userSignedIn && post.LikedBy(tx, user) %>");
+    function setupLikeBtn() {
+        likeBtn.find('.txt').text(userLikedThisPost ? "Unlike" : "Like");
+        likeBtn.find('.glyphicon').removeClass("glyphicon-heart glyphicon-heart-empty").addClass(userLikedThisPost ? "glyphicon-heart" : "glyphicon-heart-empty");
+    }
+    likeBtn.click(function () {
+        var btn = $(this);
+        if (!userSignedIn) {
             $("#reqLoginMsg").removeClass("hide");
+            return
         }
-    })
+        btn.addClass("disabled");
+        $.post("/like", {post_id: "<%= post_id %>", authenticity_token: "<%= authenticity_token %>"},
+            function (data) {
+                btn.removeClass("disabled");
+                btn.find(".like-count").text(data.count);
+                userLikedThisPost = !userLikedThisPost;
+                setupLikeBtn();
+            }).fail(function () {
+            btn.removeClass("disabled");
+        });
+    });
+    setupLikeBtn();
 </script>
 <% } %>
