@@ -5,6 +5,7 @@ import (
 	"github.com/markbates/willie"
 	"muserblog/models"
 	"net/http"
+	"github.com/satori/go.uuid"
 )
 
 func (as *ActionSuite) countUsers() int {
@@ -28,10 +29,12 @@ func userForTest() *models.User {
 }
 
 func signinUser(as *ActionSuite, user *models.User) {
-	// creates a new user record
-	tUser := *user
-	tUser.SaltPassword()
-	as.NoError(as.DB.Create(&tUser))
+	if (user.ID == uuid.Nil) {
+		// creates a new user record
+		tUser := *user
+		tUser.SaltPassword()
+		as.NoError(as.DB.Create(&tUser))
+	}
 
 	// ensure that session cookie is present
 	res := as.HTML("/").Get()

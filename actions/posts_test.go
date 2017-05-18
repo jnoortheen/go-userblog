@@ -39,6 +39,7 @@ func createPost(as *ActionSuite) (*models.User, *models.Post) {
 
 	// check exactly one new record is created
 	as.Equal(as.countPosts()-prevCount, 1)
+	userCopy.ID = user.ID
 	return &userCopy, post
 }
 
@@ -147,7 +148,7 @@ func (as *ActionSuite) Test_PostsResource_Edit() {
 	res := as.HTML(postsEditUrl, post.ID).Get()
 	as.Equal(http.StatusFound, res.Code)
 
-	// login a user
+	// login as author
 	signinUser(as, user)
 
 	// get to edit post page
