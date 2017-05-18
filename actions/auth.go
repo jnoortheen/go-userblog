@@ -126,8 +126,8 @@ func Authorizer(next buffalo.Handler) buffalo.Handler {
 func PostsAuthorizer(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
 		if c.Value("userSignedIn").(bool) {
-			return c.Redirect(http.StatusFound, "/auth/signin")
+			return next(c)
 		}
-		return next(c)
+		return c.Redirect(http.StatusFound, "/auth/signin")
 	}
 }

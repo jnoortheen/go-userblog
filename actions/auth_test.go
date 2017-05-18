@@ -102,7 +102,9 @@ func (as *ActionSuite) Test_UserSigninProcess() {
 
 	// user clicks the signout link
 	res = as.HTML(signoutPath).Get()
+	// it redirects to signin page
+	as.Equal(res.Location(), "/auth/signin")
+
 	res = as.HTML(res.Location()).Get()
-	as.Contains(res.Body.String(), "Signed out successfully")
 	as.Contains(res.Body.String(), "Signin")
 }
