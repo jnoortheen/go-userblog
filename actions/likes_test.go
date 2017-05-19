@@ -1,11 +1,9 @@
 package actions_test
 
 import (
-	"net/http"
 	"muserblog/models"
-	"fmt"
+	"net/http"
 	"strconv"
-	"github.com/satori/go.uuid"
 )
 
 var (

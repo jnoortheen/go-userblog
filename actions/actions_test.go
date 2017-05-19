@@ -3,8 +3,9 @@ package actions_test
 import (
 	"testing"
 
-	"github.com/gobuffalo/suite"
 	"muserblog/actions"
+
+	"github.com/gobuffalo/suite"
 )
 
 type ActionSuite struct {

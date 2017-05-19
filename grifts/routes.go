@@ -5,8 +5,9 @@ import (
 	"os"
 	"text/tabwriter"
 
-	. "github.com/markbates/grift/grift"
 	"muserblog/actions"
+
+	. "github.com/markbates/grift/grift"
 )
 
 var _ = Add("routes", func(c *Context) error {

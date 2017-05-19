@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gobuffalo/envy"
 	"muserblog/actions"
+
+	"github.com/gobuffalo/envy"
 )
 
 func main() {

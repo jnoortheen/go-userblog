@@ -1,8 +1,9 @@
 package models_test
 
 import (
-	"github.com/satori/go.uuid"
 	"muserblog/models"
+
+	"github.com/satori/go.uuid"
 )
 
 var (

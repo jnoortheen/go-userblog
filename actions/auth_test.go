@@ -1,10 +1,11 @@
 package actions_test
 
 import (
-	"github.com/markbates/pop/nulls"
-	"github.com/markbates/willie"
 	"muserblog/models"
 	"net/http"
+
+	"github.com/markbates/pop/nulls"
+	"github.com/markbates/willie"
 	"github.com/satori/go.uuid"
 )
 
@@ -29,7 +30,7 @@ func userForTest() *models.User {
 }
 
 func signinUser(as *ActionSuite, user *models.User) {
-	if (user.ID == uuid.Nil) {
+	if user.ID == uuid.Nil {
 		// creates a new user record
 		tUser := *user
 		tUser.SaltPassword()

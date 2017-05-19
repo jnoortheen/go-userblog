@@ -1,8 +1,9 @@
 package grifts
 
 import (
-	"github.com/markbates/grift/grift"
 	"muserblog/models"
+
+	"github.com/markbates/grift/grift"
 )
 
 var _ = grift.Add("db:seed", func(c *grift.Context) error {

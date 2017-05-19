@@ -1,11 +1,12 @@
 package actions
 
 import (
-	"github.com/gobuffalo/buffalo"
 	"muserblog/models"
 	"net/http"
-	"github.com/pkg/errors"
+
+	"github.com/gobuffalo/buffalo"
 	"github.com/markbates/pop"
+	"github.com/pkg/errors"
 )
 
 // LikeUpdate adds current user to the like table for the post or removes if exists already

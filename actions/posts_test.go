@@ -1,8 +1,8 @@
 package actions_test
 
 import (
-	"muserblog/models"
 	"fmt"
+	"muserblog/models"
 	"net/http"
 )
 
