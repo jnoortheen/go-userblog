@@ -73,6 +73,7 @@ func App() *buffalo.App {
 		auth.GET("/{action}", AuthFormHandler)
 
 		app.POST("/like", LikeUpdate)
+		app.Resource("/comments", CommentsResource{&buffalo.BaseResource{}})
 	}
 	return app
 }
