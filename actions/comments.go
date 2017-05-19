@@ -1,8 +1,6 @@
 package actions
 
 import (
-	"errors"
-
 	"muserblog/models"
 
 	"github.com/gobuffalo/buffalo"
@@ -43,26 +41,6 @@ func (v CommentsResource) List(c buffalo.Context) error {
 	return c.Render(200, r.JSON(comments))
 }
 
-// Show gets the data for one Comment. This function is mapped to
-// the path GET /comments/{comment_id}
-func (v CommentsResource) Show(c buffalo.Context) error {
-	// Get the DB connection from the context
-	tx := c.Value("tx").(*pop.Connection)
-	// Allocate an empty Comment
-	comment := &models.Comment{}
-	// To find the Comment the parameter comment_id is used.
-	err := tx.Find(comment, c.Param("comment_id"))
-	if err != nil {
-		return err
-	}
-	return c.Render(200, r.JSON(comment))
-}
-
-// New default implementation. Returns a 404
-func (v CommentsResource) New(c buffalo.Context) error {
-	return c.Error(404, errors.New("not available"))
-}
-
 // Create adds a comment to the DB. This function is mapped to the
 // path POST /comments
 func (v CommentsResource) Create(c buffalo.Context) error {
@@ -86,11 +64,6 @@ func (v CommentsResource) Create(c buffalo.Context) error {
 	}
 	// Success!
 	return c.Render(201, r.JSON(comment))
-}
-
-// Edit default implementation. Returns a 404
-func (v CommentsResource) Edit(c buffalo.Context) error {
-	return c.Error(404, errors.New("not available"))
 }
 
 // Update changes a comment in the DB. This function is mapped to
