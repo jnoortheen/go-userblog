@@ -22,12 +22,20 @@ type PostsResource struct {
 	buffalo.Resource
 }
 
-// URLParamsToContextMw if the URL contains an `id` then set the relevant post_id
+// URLParamsToContextMw set all url params to context and more
 func URLParamsToContextMw(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
 		if urlParams, ok := c.Params().(url.Values); ok {
 			for param, val := range urlParams {
 				c.Set(param, val)
+				tx := c.Value("tx").(*pop.Connection)
+				if param == "post_id" {
+					post := &models.Post{}
+					if err := tx.Find(post, c.Param("post_id")); err != nil {
+						return c.Error(http.StatusNotFound, errors.New("Post not found"))
+					}
+					c.Set("post", post)
+				}
 			}
 		}
 		return next(c)
@@ -125,16 +133,10 @@ func (v PostsResource) Create(c buffalo.Context) error {
 // Edit renders a edit formular for a post. This function is
 // mapped to the path GET /posts/{post_id}/edit
 func (v PostsResource) Edit(c buffalo.Context) error {
-	// Get the DB connection from the context
-	tx := c.Value("tx").(*pop.Connection)
-	// Allocate an empty Post
-	post := &models.Post{}
-	err := tx.Find(post, c.Param("post_id"))
-	if err != nil {
-		return err
-	}
-	// checking author field
+	post := c.Value("post").(*models.Post)
+
 	user := c.Get("user").(*models.User)
+	// checking author field
 	if user.ID != post.UserID {
 		return c.Error(http.StatusUnauthorized, errors.New("User is not authorized to edit this post"))
 	}
@@ -148,17 +150,11 @@ func (v PostsResource) Edit(c buffalo.Context) error {
 func (v PostsResource) Update(c buffalo.Context) error {
 	// Get the DB connection from the context
 	tx := c.Value("tx").(*pop.Connection)
-	// Allocate an empty Post
-	post := &models.Post{}
-	// get post from database
-	err := tx.Find(post, c.Param("post_id"))
-	if err != nil {
-		return err
-	}
+	// get old post
+	post := c.Value("post").(*models.Post)
 
-	// Bind post to the html form elements
-	err = c.Bind(post)
-	if err != nil {
+	// update post to have the html form elements
+	if err := c.Bind(post); err != nil {
 		return err
 	}
 
@@ -192,13 +188,7 @@ func (v PostsResource) Update(c buffalo.Context) error {
 func (v PostsResource) Destroy(c buffalo.Context) error {
 	// Get the DB connection from the context
 	tx := c.Value("tx").(*pop.Connection)
-	// Allocate an empty Post
-	post := &models.Post{}
-	// To find the Post the parameter post_id is used.
-	err := tx.Find(post, c.Param("post_id"))
-	if err != nil {
-		return err
-	}
+	post := c.Value("post").(*models.Post)
 
 	// checking author field
 	user := c.Get("user").(*models.User)
@@ -206,8 +196,7 @@ func (v PostsResource) Destroy(c buffalo.Context) error {
 		return c.Error(http.StatusUnauthorized, errors.New("User is not authorized to edit this post"))
 	}
 
-	err = tx.Destroy(post)
-	if err != nil {
+	if err := tx.Destroy(post); err != nil {
 		return err
 	}
 	// If there are no errors set a flash message
