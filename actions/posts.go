@@ -35,6 +35,12 @@ func URLParamsToContextMw(next buffalo.Handler) buffalo.Handler {
 						return c.Error(http.StatusNotFound, errors.New("Post not found"))
 					}
 					c.Set("post", post)
+				} else if param == "comment_id" {
+					comment := &models.Comment{}
+					if err := tx.Find(comment, c.Param("comment_id")); err != nil {
+						return c.Error(http.StatusNotFound, errors.New("Comment not found"))
+					}
+					c.Set("comment", comment)
 				}
 			}
 		}

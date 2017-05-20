@@ -81,14 +81,10 @@ func (v CommentsResource) Create(c buffalo.Context) error {
 func (v CommentsResource) Update(c buffalo.Context) error {
 	// Get the DB connection from the context
 	tx := c.Value("tx").(*pop.Connection)
-	// Allocate an empty Comment
-	comment := &models.Comment{}
-	err := tx.Find(comment, c.Param("comment_id"))
-	if err != nil {
-		return err
-	}
+	//get comment
+	comment := c.Value("comment").(*models.Comment)
 	// Bind comment to the html form elements
-	err = c.Bind(comment)
+	err := c.Bind(comment)
 	if err != nil {
 		return err
 	}
@@ -113,14 +109,15 @@ func (v CommentsResource) Update(c buffalo.Context) error {
 func (v CommentsResource) Destroy(c buffalo.Context) error {
 	// Get the DB connection from the context
 	tx := c.Value("tx").(*pop.Connection)
-	// Allocate an empty Comment
-	comment := &models.Comment{}
-	// To find the Comment the parameter comment_id is used.
-	err := tx.Find(comment, c.Param("comment_id"))
-	if err != nil {
-		return err
+	comment := c.Value("comment").(*models.Comment)
+
+	user := c.Value("user").(*models.User)
+	if user.ID != comment.UserID {
+		return c.Error(http.StatusUnauthorized, errors.New("User is not authorized to edit"))
 	}
-	err = tx.Destroy(comment)
+
+	// delete comment from database
+	err := tx.Destroy(comment)
 	if err != nil {
 		return err
 	}

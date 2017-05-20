@@ -84,8 +84,32 @@ func (as *ActionSuite) Test_CommentsResource_Update() {
 	as.Equal("updated content", comment.Content)
 	as.Equal(comment.UserID, user.ID)
 	as.Equal(comment.PostID, post.ID)
+	as.HTML(signoutPath).Get()
+
+	// login as another user
+	user2 := user2ForTest(as)
+	signinUser(as, user2)
+	res := as.JSON(as.commentUpdatePath(post, comment)).Put(comment)
+	as.Equal(http.StatusUnauthorized, res.Code)
 }
 
 func (as *ActionSuite) Test_CommentsResource_Destroy() {
-	as.Fail("Not Implemented!")
+	user, post := createPost(as)
+	comment := &models.Comment{Content: "content", UserID: user.ID, PostID: post.ID}
+	as.DB.Create(comment)
+	prevCount := as.countComments()
+
+	// login as another user
+	user2 := user2ForTest(as)
+	signinUser(as, user2)
+	res := as.JSON(as.commentUpdatePath(post, comment)).Delete()
+	as.Equal(http.StatusUnauthorized, res.Code)
+	as.HTML(signoutPath).Get()
+
+	// login as author
+	signinUser(as, user)
+	// test delete now
+	res = as.JSON(as.commentUpdatePath(post, comment)).Delete()
+	as.Equal(200, res.Code)
+	as.Equal(-1, as.countComments()-prevCount)
 }
