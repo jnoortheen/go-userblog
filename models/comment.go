@@ -13,8 +13,8 @@ import (
 // Comment is mapped to comment db_table/form/json
 type Comment struct {
 	ID        uuid.UUID `json:"id" db:"id"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	CreatedAt time.Time `json:"created" db:"created_at"`
+	UpdatedAt time.Time `json:"modified" db:"updated_at"`
 	Content   string    `json:"content" db:"content"`
 	PostID    uuid.UUID `json:"post_id" db:"post_id"`
 	UserID    uuid.UUID `json:"user_id" db:"user_id"`
@@ -24,6 +24,31 @@ type Comment struct {
 func (c Comment) String() string {
 	jc, _ := json.Marshal(c)
 	return string(jc)
+}
+
+// CommentQueryJson is mapped to jquery-comments library fields
+type CommentExt struct {
+	*Comment
+	FullName             string `json:"fullname"`
+	CreatedByCurrentUser bool `json:"created_by_current_user"`
+}
+
+// String is not required by pop and may be deleted
+func (c CommentExt) String() string {
+	jc, _ := json.Marshal(c)
+	return string(jc)
+}
+
+// String is not required by pop and may be deleted
+func (c *CommentExt) Update(tx *pop.Connection, currentUser *User) {
+	if c.UserID != uuid.Nil {
+		if c.FullName == "" {
+			user := &User{}
+			tx.Find(user, c.UserID)
+			c.FullName = user.Name
+		}
+		c.CreatedByCurrentUser = (currentUser.ID == c.UserID)
+	}
 }
 
 // Comments is not required by pop and may be deleted
