@@ -40,14 +40,17 @@ func (c CommentExt) String() string {
 }
 
 // String is not required by pop and may be deleted
-func (c *CommentExt) Update(tx *pop.Connection, currentUser *User) {
+func (c *CommentExt) Update(tx *pop.Connection, currentUser interface{}) {
 	if c.UserID != uuid.Nil {
 		if c.FullName == "" {
 			user := &User{}
 			tx.Find(user, c.UserID)
 			c.FullName = user.Name
 		}
-		c.CreatedByCurrentUser = (currentUser.ID == c.UserID)
+		currentUser, ok := currentUser.(*User)
+		if ok {
+			c.CreatedByCurrentUser = (currentUser.ID == c.UserID)
+		}
 	}
 }
 
