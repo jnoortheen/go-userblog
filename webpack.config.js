@@ -2,6 +2,8 @@ var webpack = require("webpack");
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+process.traceDeprecation = true;
+
 module.exports = {
   entry: [
     "./assets/js/application.js",

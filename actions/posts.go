@@ -27,7 +27,7 @@ func URLParamsToContextMw(next buffalo.Handler) buffalo.Handler {
 	return func(c buffalo.Context) error {
 		if urlParams, ok := c.Params().(url.Values); ok {
 			for param, val := range urlParams {
-				c.Set(param, val)
+				c.Set(param, val[0])
 				tx := c.Value("tx").(*pop.Connection)
 				if param == "post_id" {
 					post := &models.Post{}
