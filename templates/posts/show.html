@@ -43,18 +43,26 @@ let likesCount = post.LikesCount(tx)
 </div>
 <br/>
 
+<!--portion for comment -->
+<div class="row">
+    <div id="comments-container" class="col-md-12">
+
+    </div>
+</div>
+<br/>
+
 <%= contentFor("script") { %>
 <script type="text/javascript">
-    var likeBtn = $("#likeBtn");
-    var userSignedIn = eval("<%= userSignedIn %>");
+    let likeBtn = $("#likeBtn");
+    let userSignedIn = eval("<%= userSignedIn %>");
     //    initial value for the like button
-    var userLikedThisPost = eval("<%= userSignedIn && post.LikedBy(tx, user) %>");
+    let userLikedThisPost = eval("<%= userSignedIn && post.LikedBy(tx, user) %>");
     function setupLikeBtn() {
         likeBtn.find('.txt').text(userLikedThisPost ? "Unlike" : "Like");
         likeBtn.find('.glyphicon').removeClass("glyphicon-heart glyphicon-heart-empty").addClass(userLikedThisPost ? "glyphicon-heart" : "glyphicon-heart-empty");
     }
     likeBtn.click(function () {
-        var btn = $(this);
+        let btn = $(this);
         if (!userSignedIn) {
             $("#reqLoginMsg").removeClass("hide");
             return
@@ -71,5 +79,17 @@ let likesCount = post.LikesCount(tx)
         });
     });
     setupLikeBtn();
+
+    //    initialize comments
+    $('#comments-container').comments({
+        enableReplying: false,
+        enableUpvoting: false,
+        forceResponsive: true,
+        getComments: function (success, error) {
+            $.getJSON('<%= commentsPath({post_id: "test"}) %>', success).fail(function () {
+                error();
+            });
+        }
+    });
 </script>
 <% } %>
