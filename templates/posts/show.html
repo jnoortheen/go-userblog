@@ -86,9 +86,11 @@ let likesCount = post.LikesCount(tx)
         enableUpvoting: false,
         forceResponsive: true,
         getComments: function (success, error) {
-            $.getJSON('<%= commentsPath({post_id: post_id}) %>', success).fail(function () {
-                error();
-            });
+            $.getJSON('<%= commentsPath({post_id: post_id}) %>', success).fail(error);
+        },
+        postComment: function (commentJson, success, error) {
+            delete commentJson.id
+            $.post('<%= commentsPath({post_id: post_id}) %>', commentJson, success).fail(error);
         }
     });
 </script>
