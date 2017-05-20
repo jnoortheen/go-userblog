@@ -57,21 +57,23 @@ func App() *buffalo.App {
 
 		app.Use(Authorizer)
 		app.Use(URLParamsToContextMw)
-
-		app.Resource("/comments", CommentsResource{&buffalo.BaseResource{}})
+		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
 
 		var postResource buffalo.Resource
 		postResource = &PostsResource{&buffalo.BaseResource{}}
-		app.GET("/", postResource.List)
-
-		app.ServeFiles("/assets", packr.NewBox("../public/assets"))
-
 		posts := app.Resource("/posts", postResource)
 		posts.Use(PostsAuthorizer)
 		posts.Middleware.Skip(PostsAuthorizer, postResource.List, postResource.Show)
+		app.GET("/", postResource.List)
+
+		var commentResource buffalo.Resource
+		commentResource = &CommentsResource{&buffalo.BaseResource{}}
+		comments := app.Resource("/comments", commentResource)
+		comments.Use(CommentsAuthorizer)
+		comments.Middleware.Skip(CommentsAuthorizer, commentResource.List)
 
 		auth := app.Group("/auth")
-		auth.POST("/{action}", AuthHandler)
+		auth.POST("/{action}", AuthHandler).Name("Auth")
 		auth.GET("/{action}", AuthFormHandler)
 
 		app.POST("/like", LikeUpdate)

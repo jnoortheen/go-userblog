@@ -131,3 +131,13 @@ func PostsAuthorizer(next buffalo.Handler) buffalo.Handler {
 		return c.Redirect(http.StatusFound, "/auth/signin")
 	}
 }
+
+// CommentsAuthorizer middleware returns error if user not logged in
+func CommentsAuthorizer(next buffalo.Handler) buffalo.Handler {
+	return func(c buffalo.Context) error {
+		if c.Value("userSignedIn").(bool) {
+			return next(c)
+		}
+		return c.Error(http.StatusUnauthorized, errors.New("Not authorized"))
+	}
+}
