@@ -4,9 +4,9 @@ This is a port of [AppStory](https://github.com/jnoortheen/appstory) to Go. A mu
 
 ## Tech Stack
 - Go
-- Buffalo
-- Jquery Comments
-- Bootstrap3
+- [Buffalo](https://github.com/gobuffalo/buffalo)
+- [Jquery Comments](http://viima.github.io/jquery-comments/)
+- Bootstrap 3
 
 ## Database Setup
 
@@ -24,8 +24,12 @@ To run all pending migrations
 
 ## Starting the Application
 
-Run the binary found here at [dist](./dist)
-	$ ./muserblog
+Install all dependencies using `dep` and ensure that you have installed sqlite3, nodejs, & npm and then run
+
+```
+buffalo dev
+```
+from the project's root directory 
 
 If you point your browser to [http://127.0.0.1:3000](http://127.0.0.1:3000) blog home page.
 
