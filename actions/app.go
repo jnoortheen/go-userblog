@@ -68,7 +68,7 @@ func App() *buffalo.App {
 
 		var commentResource buffalo.Resource
 		commentResource = &CommentsResource{&buffalo.BaseResource{}}
-		comments := app.Resource("/comments", commentResource)
+		comments := app.Resource("/{post_id}/comments", commentResource)
 		comments.Use(CommentsAuthorizer)
 		comments.Middleware.Skip(CommentsAuthorizer, commentResource.List)
 

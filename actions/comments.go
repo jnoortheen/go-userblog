@@ -28,9 +28,10 @@ type CommentsResource struct {
 func (v CommentsResource) List(c buffalo.Context) error {
 	// Get the DB connection from the context
 	tx := c.Value("tx").(*pop.Connection)
+	post := c.Value("post").(*models.Post)
 	comments := &models.Comments{}
 	// You can order your list here. Just change
-	err := tx.All(comments)
+	err := tx.BelongsTo(post).All(comments)
 	// to:
 	// err := tx.Order("(case when completed then 1 else 2 end) desc, lower([sort_parameter]) asc").All(comments)
 	// Don't forget to change [sort_parameter] to the parameter of
