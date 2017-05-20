@@ -40,6 +40,8 @@ func (c Comments) String() string {
 func (c *Comment) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.Validate(
 		&validators.StringIsPresent{Field: c.Content, Name: "Content"},
+		&validators.StringIsPresent{Field: c.PostID.String(), Name: "PostID"},
+		&validators.StringIsPresent{Field: c.UserID.String(), Name: "PostID"},
 	), nil
 }
 
