@@ -91,6 +91,11 @@ let likesCount = post.LikesCount(tx)
         postComment: function (commentJson, success, error) {
             delete commentJson.id
             $.post('<%= commentsPath({post_id: post_id}) %>', commentJson, success).fail(error);
+        },
+        putComment: function (commentJson, success, error) {
+            let id = commentJson.id;
+            delete commentJson.id;
+            $.put(`<%= commentsPath({post_id: post_id}) %>/${id}`, commentJson, success).fail(error);
         }
     });
 </script>
