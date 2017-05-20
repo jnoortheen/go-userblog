@@ -5,6 +5,7 @@ This is a port of [AppStory](https://github.com/jnoortheen/appstory) to Go. A mu
 ## Tech Stack
 - Go
 - Buffalo
+- Jquery Comments
 - Bootstrap3
 
 ## Database Setup
@@ -29,15 +30,13 @@ Run the binary found here at [dist](./dist)
 If you point your browser to [http://127.0.0.1:3000](http://127.0.0.1:3000) blog home page.
 
 ## Functionality
--[ ] User Accounts:
-  Users account activity is implemented using secured cookies. Usernames are maintained to be unique. The password is stored as Hash values with salted compound.
-  User activities  
-  - Sign-up
-  - Sign-in 
-  - Sign-out 
--[ ] Blog Posts:
-  Registered users can post to the blog. That post can later be edited or deleted by the author.
--[ ] Commenting:
-  Posts can be commented by any of registered user. Unregistered users can view the comments. Registered users can edit or delete their own comments.
--[ ] Like/Dislike:
-  Each of the post can be like/disliked by other registered users (Not the Author). User can't dislike a post if they haven't already liked it.
+A small micro blog with below features
+- User Accounts:
+  Users account activity is implemented using secured cookies. Usernames are maintained to be unique. The password 
+  is stored as Hash values with salted compound.
+- Registered users can post to the blog. That post can later be edited or deleted by the author.
+- Commenting on posts
+- Like/Dislike posts
+
+## Screencap
+![screenshot](./img/show.png)
