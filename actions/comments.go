@@ -41,7 +41,14 @@ func (v CommentsResource) List(c buffalo.Context) error {
 	if err != nil {
 		return err
 	}
-	return c.Render(200, r.JSON(comments))
+	commentExts := []*models.CommentExt{}
+	for _, comment := range *comments {
+		cmntExt := &models.CommentExt{}
+		cmntExt.Comment = &comment
+		cmntExt.Update(tx, c.Value("user"))
+		commentExts = append(commentExts, cmntExt)
+	}
+	return c.Render(200, r.JSON(commentExts))
 }
 
 // Create adds a comment to the DB. This function is mapped to the

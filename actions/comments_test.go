@@ -25,12 +25,12 @@ func (as *ActionSuite) Test_CommentsResource_List() {
 		as.DB.Create(&models.Comment{Content: content, UserID: user.ID, PostID: post.ID})
 	}
 	resp := as.JSON(as.commentPath(post)).Get()
-	comments := &models.Comments{}
-
-	if err := json.NewDecoder(resp.Body).Decode(comments); err != nil {
-		as.Fail("failed to decode")
-	}
+	comments := &[]models.CommentExt{}
+	as.NoError(json.NewDecoder(resp.Body).Decode(comments))
 	as.Equal(len(*comments), len(contents))
+	for _, cmnt := range *comments {
+		as.Equal(cmnt.FullName, user.Name)
+	}
 }
 
 func (as *ActionSuite) Test_CommentsResource_Create() {
