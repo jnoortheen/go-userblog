@@ -65,6 +65,10 @@ func (v PostsResource) List(c buffalo.Context) error {
 	}
 	// Make posts available inside the html template
 	c.Set("posts", posts)
+	// Return post's author name
+	c.Set("author_name", func(p models.Post, tx *pop.Connection) string {
+		return (&p).Author(tx).Name
+	})
 	return c.Render(200, r.HTML("posts/index.html"))
 }
 

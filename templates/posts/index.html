@@ -1,29 +1,20 @@
-
 <h1>Posts</h1>
 
-<p>
-  <a href="/posts/new" class="btn btn-primary">Create New Post</a>
-</p>
-
-<table class="table table-striped">
-  <thead>
-  
-    <th>Title</th>
-    <th>&nbsp;</th>
-  </thead>
-  <tbody>
-    <%= for (post) in posts { %>
-      <tr>
-      
-        <td><%= post.Title %></td>
-        <td>
-          <div class="pull-right">
-            <a href="/posts/<%= post.ID %>" class="btn btn-info">View</a>
-            <a href="/posts/<%= post.ID %>/edit" class="btn btn-warning">Edit</a>
-            <a href="/posts/<%= post.ID %>" data-method="DELETE" data-confirm="Are you sure?" class="btn btn-danger">Destroy</a>
-          </div>
-        </td>
-      </tr>
-    <% } %>
-  </tbody>
-</table>
+<%= for (post) in posts { %>
+<div class="row">
+    <div class="col-md-8 text-left">
+        <a href="/posts/<%= post.ID %>"><h1><%= post.Title %></h1></a>
+    </div>
+    <div class="col-md-4 text-right">
+        <h5>Author: <%= author_name(post, tx) %></h5>
+        <h6><%= post.UpdatedAt.Format("Mon Jan 2, 2006 3:04PM MST") %></h6>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 text-left">
+        <p><%= post.ShortContent() %><a href="/posts/<%= post.ID %>">...</a></p>
+    </div>
+</div>
+<br/>
+<br/>
+<% } %>

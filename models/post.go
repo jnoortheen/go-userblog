@@ -8,6 +8,8 @@ import (
 	"github.com/markbates/validate"
 	"github.com/markbates/validate/validators"
 	"github.com/satori/go.uuid"
+	"strings"
+	"html/template"
 )
 
 // Post db table struct
@@ -76,4 +78,18 @@ func (p *Post) LikesCount(tx *pop.Connection) int {
 		return cnt
 	}
 	return 0
+}
+
+// ShortContent return few lines of the post
+func (p Post) ShortContent() template.HTML {
+	cont := strings.Split(p.Content, "\n")
+	if len(cont) > 3 {
+		cont = cont[:3]
+	}
+	return template.HTML(strings.Join(cont, "<br/>"))
+}
+
+// ShortContent return few lines of the post
+func (p *Post) ContentHtml() template.HTML {
+	return template.HTML(strings.Replace(p.Content, "\n", "<br/>", -1))
 }
